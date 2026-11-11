@@ -58,7 +58,7 @@ Review candidate `README.md` digests strictly against the **Objective & Requirem
 - ❌ **Discarded:** Violates hard requirements, empty wrappers, abandoned toys, or AI-slop.
 
 ### Step 5: Parallel Anatomical X-Ray (`xray.py`) of Top Repositories
-Run `xray.py` on the top 4 to 8 relevant repositories in parallel to dissect their complete internal file trees without cloning:
+Run `xray.py` on the **top 10 relevant repositories** (highest composite score passing triage) in parallel to dissect their complete internal file trees without cloning:
 
 ```powershell
 python .agents/skills/explore/scripts/xray.py owner1/repo1 owner2/repo2 owner3/repo3
@@ -73,5 +73,13 @@ python .agents/skills/explore/scripts/peek.py owner/repo path/to/file.py --max-l
 Respond in the language used by the user (e.g. Spanish if prompted in Spanish) with 4 structured sections:
 1. **Marco de Objetivo y Requisitos (Target Frame):** North Star, Hard Requirements, and Discard Criteria.
 2. **Resumen de la Flota de Exploración (Fleet Triage Summary):** Repos scanned across all channels and relevance breakdown.
-3. **Tabla Comparativa de Botín (Comparative Loot Table):** Ranked by composite score with commercial license traffic light (`🟢/🟡/🔴`) and exact scavengeable assets.
-4. **Análisis DAFO (SWOT) Enfocado al Objetivo:** Strengths, Weaknesses, Loot Opportunities, and Threats/Risks evaluated strictly against the Step 1 requirements.
+3. **Tabla Comparativa de Botín (Comparative Loot Table — Máximo Top 10):**
+   Presenta la tabla comparativa con **como mucho 10 repositorios** (los que tienen mayor puntuación compuesta `composite_score`).
+   Columnas: Posición, Repositorio, Puntuación, Semáforo de Licencia (`🟢 Permisiva / 🟡 Copyleft / 🔴 Sin licencia`), Lenguaje/Tamaño y Botín Concreto Reutilizable.
+4. **Análisis DAFO (SWOT) Enfocado al Objetivo (Máximo Top 10):**
+   Muestra el desglose DAFO individual (Fortalezas, Debilidades, Oportunidades de Saqueo y Amenazas de Licencia/Riesgo) **únicamente para los 10 mejores repositorios**.
+
+> [!NOTE]
+> **Aviso de expansión obligatoria al final del reporte:**
+> Incluye siempre al pie del reporte un mensaje claro ofreciendo consultar el resto de repositorios:
+> *"💡 **Mostrando los Top 10 repositorios por puntuación.** Si deseas ver la tabla comparativa con los repositorios restantes o un desglose DAFO detallado de cualquier otro repositorio escaneado, indícalo y te lo muestro."*
