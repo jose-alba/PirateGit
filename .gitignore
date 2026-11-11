@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# PirateGit Quarantine & Caches
+others/
+agy_github_scout_cache/
+.idea/
+.vscode/
