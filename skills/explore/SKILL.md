@@ -10,11 +10,12 @@ description: >-
 
 The `/explore` skill is the intelligence, intent-framing, and reconnaissance fleet of PirateGit. It formalizes the user's ultimate goal and technical requirements upfront, then dispatches **parallel scouting subagents ("Pirate Scouts")** to sweep public platforms, culls candidate READMEs against criteria, runs anatomical zero-clone `xray` inspections, and delivers a ranked **Loot Table + SWOT (DAFO) Analysis**.
 
-## Executable CLI Engine
+## Self-Contained Skill Executables
 
-Always run the zero-dependency script:
-- Local path: `scripts/pirategit.py`
-- Global path: `C:\Users\jose_\.gemini\config\skills\github-repo-scout\scripts\github_scout.py`
+Each helper is completely decoupled and self-contained in `scripts/`:
+- Multi-channel search & scoring: [explore.py](./scripts/explore.py)
+- Anatomical zero-clone X-ray: [xray.py](./scripts/xray.py)
+- Zero-quota file peeker: [peek.py](./scripts/peek.py)
 
 ---
 
@@ -40,10 +41,13 @@ Generate:
 2. **2 to 4 canonical GitHub Topic slugs** (e.g., `pcb-design`, `eda`, `autorouter`).
 
 ### Step 3: Dispatch Parallel Pirate Scouts (Subagent Search Fleet)
-To maximize throughput and cross-validation, dispatch parallel scouting tasks:
-- **Scout A (GitHub & Topics):** Executes `scripts/pirategit.py explore ... --50repos` across GitHub Search API and canonical topic feeds.
-- **Scout B (Discussion Feeds - HN & Reddit):** Searches Hacker News stories/comments and public Reddit archive feeds for real engineer recommendations and hidden gems.
-- *Execution:* If subagents are supported in the runtime (`invoke_subagent` / task pool), dispatch scouts in parallel; otherwise, execute the multi-threaded `pirategit.py explore` command which runs all 4 channels concurrently.
+Run the self-contained explore script (relative to skill or project):
+```powershell
+python .agents/skills/explore/scripts/explore.py "query 1" "query 2" "query 3" --topics topic-one topic-two --50repos
+```
+*(Or `python skills/explore/scripts/explore.py ...` if in repo root).*
+
+This searches **GitHub Search + GitHub Topics + Hacker News (Algolia) + Reddit (Public JSON & PullPush archive)** in parallel, downloads clean `README.md` extracts via `raw.githubusercontent.com` (0 API quota), and scores candidates using the DeepGit composite signal formula (`relevance`, `maintenance`, `popularity`, `health`).
 
 *Tip:* Read the untruncated digest saved at `.../agy_github_scout_cache/last_explore_digest.md` to ensure zero lost context.
 
@@ -53,20 +57,20 @@ Review candidate `README.md` digests strictly against the **Objective & Requirem
 - ⚖️ **Medium Relevance:** Secondary tools or inspiration.
 - ❌ **Discarded:** Violates hard requirements, empty wrappers, abandoned toys, or AI-slop.
 
-### Step 5: Parallel Anatomical X-Ray (`xray`) of Top Repositories
-Run `xray` on the top 4 to 8 relevant repositories in parallel to dissect their complete internal file trees without cloning:
+### Step 5: Parallel Anatomical X-Ray (`xray.py`) of Top Repositories
+Run `xray.py` on the top 4 to 8 relevant repositories in parallel to dissect their complete internal file trees without cloning:
 
 ```powershell
-python scripts/pirategit.py xray owner1/repo1 owner2/repo2 owner3/repo3
+python .agents/skills/explore/scripts/xray.py owner1/repo1 owner2/repo2 owner3/repo3
 ```
 
-*(Optional)* Inspect specific core algorithm or data files with `peek`:
+*(Optional)* Inspect specific core algorithm or data files with `peek.py`:
 ```powershell
-python scripts/pirategit.py peek owner/repo path/to/file.py --max-lines 120
+python .agents/skills/explore/scripts/peek.py owner/repo path/to/file.py --max-lines 120
 ```
 
 ### Step 6: Deliver Intelligence Report (in User's Language)
-Respond in the user's language (e.g. Spanish if prompted in Spanish) with 4 structured sections:
+Respond in the language used by the user (e.g. Spanish if prompted in Spanish) with 4 structured sections:
 1. **Marco de Objetivo y Requisitos (Target Frame):** North Star, Hard Requirements, and Discard Criteria.
 2. **Resumen de la Flota de Exploración (Fleet Triage Summary):** Repos scanned across all channels and relevance breakdown.
 3. **Tabla Comparativa de Botín (Comparative Loot Table):** Ranked by composite score with commercial license traffic light (`🟢/🟡/🔴`) and exact scavengeable assets.

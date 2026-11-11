@@ -23,8 +23,39 @@ PirateGit adds two high-leverage slash commands powered by specialized subagents
 /explore  ──►  Reconnaissance Fleet: Synthesizes your North Star, dispatches parallel Pirate Scouts
                across GitHub, Topics, HN & Reddit, and runs zero-clone X-rays + DAFO.
 
-/loot     ──►  Plunder & Quality Tribunal: Designs the blueprint, harvests to others/, transplants
-               clean code, and runs a Critic + Judge Tribunal to guarantee production readiness.
+/loot     ──►  Architecture & Quality Tribunal: Designs or forks baseline project structure, harvests
+               to others/, transplants clean code into src/, assets/ & tests/, and runs Critic + Judge.
+```
+
+---
+
+## 📂 100% Self-Contained Skill Architecture
+
+Each skill is completely decoupled and self-contained with its own executable scripts inside its folder:
+
+```text
+PirateGit/
+├── skills/
+│   ├── explore/
+│   │   ├── SKILL.md                  # Reconnaissance protocol
+│   │   └── scripts/
+│   │       ├── explore.py            # 4-channel search & DeepGit scoring
+│   │       ├── xray.py               # Zero-clone anatomical tree inspection
+│   │       ├── peek.py               # Zero-quota file reader
+│   │       └── lib/                  # Shared client, scoring, and channel helpers
+│   │
+│   └── loot/
+│       ├── SKILL.md                  # Architecture, baseline adoption, harvesting & tribunal protocol
+│       └── scripts/
+│           ├── harvest.py            # Quarantine downloader into others/
+│           ├── files.py              # File-tree path filter
+│           ├── peek.py               # Zero-quota file reader
+│           └── lib/                  # Shared client, scoring, and tree helpers
+│
+├── docs/assets/                      # Badges, logo, and illustrations
+├── install.ps1 / install.sh          # One-line cross-platform installers
+├── README.md
+└── LICENSE
 ```
 
 ---
@@ -59,13 +90,22 @@ Synthesizes your ultimate objective, deploys a **fleet of parallel scouting suba
 
 ---
 
-## 2. `/loot` — Blueprints, Surgical Transfusion & Quality Tribunal
+## 2. `/loot` — Blueprints, Baseline Adoption & Quality Tribunal
 
 <div align="center">
   <img src="docs/assets/pirate_loot.jpg" alt="PirateGit Loot" width="85%" style="border-radius: 12px; margin: 15px 0;">
 </div>
 
-Takes the intelligence gathered from `/explore`, designs the target project architecture, downloads selected repositories into a local quarantine cache (`others/`), transplants clean data and code step-by-step into your codebase, and subjects all ported code to an **adversarial Quality Tribunal (Critic + Judge)**.
+Takes the intelligence gathered from `/explore`, establishes or aligns the target architecture, harvests selected repositories into a local quarantine cache (`others/`), transplants clean data and code step-by-step into your codebase, and subjects all ported code to an **adversarial Quality Tribunal (Critic + Judge)**.
+
+### Empty Workspace? Fast-Track Baseline Adoption
+If your project is empty or greenfield and one of the explored repositories already has a solid, battle-tested architecture matching your goal:
+- `/loot` proposes adopting that repository as the **Architectural Baseline**.
+- Extracts its structural foundation into standard industry layout:
+  - `src/`: Core domain logic, engines, models, and interfaces.
+  - `tests/`: Unit and integration test suites.
+  - `assets/` (or `data/`): Curated datasets, fixtures, and schemas.
+- Then prunes unneeded modules and transplants superior algorithms from other candidates.
 
 ### Chat Syntax
 ```text
@@ -77,19 +117,22 @@ Takes the intelligence gathered from `/explore`, designs the target project arch
 # Inherit top recommendations from /explore automatically:
 /loot
 
+# Greenfield project: adopt repoA structure as baseline and transplant repoB engines:
+/loot empty project, adopt repoA architecture as baseline and port repoB algorithms into src/
+
 # Specify exact sources and exclusions:
 /loot use the dataset from viaduct and the placement engine from eda-agent, but ignore altium stuff
 
 # Direct to a specific architectural target:
-/loot only the stackup json and routing algorithms, adapt them to our src_clean structure
+/loot only the stackup json and routing algorithms, adapt them to our src layout with assets/ and tests/
 ```
 
 ### How the Agent Executes `/loot`:
-1. **Architectural Alignment:** Validates your project layout and maps which piece of code/data will be scavenged from which repository. Asks for confirmation before modifying files.
+1. **Architectural Alignment & Baseline Selection:** Evaluates your workspace, proposes standard `src/`, `tests/`, `assets/` layout (or baseline adoption), and maps code/data sources. Asks for confirmation before modifying files.
 2. **Harvest to `others/`:** Downloads candidate repositories or specific subdirectories into a local `others/<repo>` folder (kept in `.gitignore` so your repo stays lightweight).
 3. **Surgical Transfusion:**
-   - Adapts datasets into your `data/` folder with typed loaders.
-   - Refactors core engines: strips proprietary dependencies, cleans imports, applies your coding style, and integrates them into your active codebase.
+   - Adapts datasets into `assets/` (or `data/`) with typed loaders.
+   - Refactors core engines into `src/`: strips proprietary dependencies, cleans imports, applies your coding style, and adds unit tests in `tests/`.
    - Logs source attribution and license provenance in `projects.md`.
 4. **Mandatory Quality Tribunal:**
    - 🕵️ **The Critic Subagent:** Relentlessly audits ported code for license contamination (`GPL` leaks), dead code, zombie dependencies, and architecture drift.
@@ -97,25 +140,25 @@ Takes the intelligence gathered from `/explore`, designs the target project arch
 
 ---
 
-## 🛠️ Standalone Terminal CLI (`pirategit.py`)
+## 🛠️ Direct Terminal CLI Usage
 
-You can also run the zero-dependency CLI engine directly from your terminal:
+Because each script is a standalone Python stdlib utility, you can also run them directly from your terminal:
 
 ```bash
 # 1. Multi-channel search, README triage & composite signal scoring
-python scripts/pirategit.py explore "query 1" "query 2" --topics topic-name --50repos
+python skills/explore/scripts/explore.py "query 1" "query 2" --topics topic-name --50repos
 
 # 2. Anatomical file-tree dissection of repos without cloning
-python scripts/pirategit.py xray owner1/repo1 owner2/repo2
+python skills/explore/scripts/xray.py owner1/repo1 owner2/repo2
 
-# 3. Filter file trees by keyword
-python scripts/pirategit.py files owner/repo placement router
+# 3. Read specific files with zero API quota
+python skills/explore/scripts/peek.py owner/repo path/to/file.py --max-lines 80
 
-# 4. Zero-API-quota file reader (via raw.githubusercontent.com)
-python scripts/pirategit.py peek owner/repo path/to/file.py --max-lines 80
+# 4. Filter repository paths by keywords
+python skills/loot/scripts/files.py owner/repo placement router
 
 # 5. Harvest selective files or full repository ZIP into others/
-python scripts/pirategit.py harvest owner/repo --dest others --paths path/to/file.py
+python skills/loot/scripts/harvest.py owner/repo --dest others --paths path/to/file.py
 ```
 
 ---
@@ -132,12 +175,16 @@ irm https://raw.githubusercontent.com/username/PirateGit/main/install.ps1 | iex
 curl -fsSL https://raw.githubusercontent.com/username/PirateGit/main/install.sh | bash
 ```
 
-### Manual Installation
-Copy the `skills/` folder into your agent's skills directory:
-- **Antigravity / Gemini:** `~/.gemini/config/skills/`
-- **Claude Code:** `~/.claude/skills/`
+### Manual Installation (Drop into any project)
+Simply copy the `skills/explore` and `skills/loot` folders directly into any project's `.agents/skills/` directory:
 
-*(Optional)* Set `GITHUB_TOKEN` or `GH_TOKEN` in your environment to raise GitHub's search rate limit from 60 req/hr to 5,000 req/hr.
+```text
+MyProject/
+└── .agents/
+    └── skills/
+        ├── explore/       # 👈 Self-contained, works out of the box
+        └── loot/          # 👈 Self-contained, works out of the box
+```
 
 ---
 
