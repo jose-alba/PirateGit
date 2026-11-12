@@ -10,15 +10,17 @@ description: >-
 
 The `/loot` skill follows the intelligence gathered by `/explore`. It acts as an **Architect, Surgical Scavenger, and Quality Tribunal**:
 1. It inherits the **Objective & Requirements Frame** from `/explore` and applies any user exclusions/constraints.
-2. **Empty Project or Greenfield Scenarios (Fast-Track Baseline):** If the workspace is empty or starting from scratch, it evaluates if one of the top explored repositories already possesses a mature, battle-tested architecture and class hierarchy matching the target. If so, it proposes adopting that repository as the **Architectural Baseline**, extracting its structural foundation, and pruning/modifying on top of it rather than building from a blank slate.
-3. **Standard Project Conventions:** Enforces enterprise industry standards for project layout:
+2. **Unrestricted PoC & Prototype Looting:** In exploratory, prototyping, and greenfield phases, innovation and velocity come first. **You may harvest and port code or data from ANY candidate repository regardless of license** (including Copyleft `GPL/AGPL`, restrictive, or unlicensed code).
+3. **Mandatory In-Code Provenance Tagging (Taint Tracking):** Because unvetted code must never silently seep into production later on, **every single scavenged function, class, data file, or schema MUST be explicitly tagged with a standardized `[PIRATEGIT LOOT PROVENANCE]` docstring/header**.
+4. **Empty Project or Greenfield Scenarios (Fast-Track Baseline):** If the workspace is empty or starting from scratch, it evaluates if one of the top explored repositories already possesses a mature, battle-tested architecture and class hierarchy matching the target. If so, it proposes adopting that repository as the **Architectural Baseline**, extracting its structural foundation, and pruning/modifying on top of it rather than building from a blank slate.
+5. **Standard Project Conventions:** Enforces enterprise industry standards for project layout:
    - `src/`: All application source code, domain models, and core logic.
    - `tests/`: Automated unit and integration test suites.
    - `assets/` (or `data/`): Curated datasets, static fixtures, schemas, and configurations.
    - `docs/`: User guides, API references, and architecture documentation.
-4. **Quarantine Harvest (`others/`):** Clones or extracts candidates into local `others/` quarantine for safe inspection and surgery.
-5. **Surgical Transfusion:** Refactors, cleans, and ports selected assets into the target project layout.
-6. **Mandatory Final Step — The Quality Tribunal (Critic & Judge):** Launches an adversary **Critic Subagent** to audit for license contamination, dead code, and architecture drift, followed by a **Judge Subagent** that delivers the final production verdict.
+6. **Quarantine Harvest (`others/`):** Clones or extracts candidates into local `others/` quarantine for safe inspection and surgery.
+7. **Surgical Transfusion:** Refactors, cleans, and ports selected assets into the target project layout.
+8. **Mandatory Final Step — The Quality Tribunal (Critic & Judge):** Launches an adversary **Critic Subagent** to audit for dead code, architecture drift, and **verify 100% provenance tag coverage**, followed by a **Judge Subagent** that delivers the final **Provenance Inventory & Production Verdict**.
 
 ## Self-Contained Skill Executables
 
@@ -48,10 +50,10 @@ The user may invoke `/loot` with freeform natural-language instructions, prefere
 #### 1. Baseline Architecture Strategy (Greenfield / Empty Workspace)
 Check if the current workspace is empty or lacks clear structure:
 - **Case A: Empty Project + Strong Architectural Match Exists in `/explore`**
-  If one explored repository (with a permissive license `🟢 MIT/Apache`) already has an exceptional, battle-tested layout, class hierarchy, and dependency setup closely matching our North Star:
-  - Recommend adopting it as the **Architectural Baseline**.
+  If one explored repository already has an exceptional, battle-tested layout, class hierarchy, and dependency setup closely matching our North Star:
+  - Recommend adopting it as the **Architectural Baseline** (regardless of license for early PoC prototyping).
   - Harvest its foundation into the project (creating standard `src/`, `tests/`, `assets/`, `docs/` directories).
-  - Then plan surgical modifications, pruning unneeded parts and swapping in better algorithms from secondary repos.
+  - Plan surgical modifications, pruning unneeded parts and swapping in better algorithms from secondary repos.
 - **Case B: Existing Project Structure or Custom Design**
   Align with the existing workspace structure, ensuring all ported code cleanly integrates into standard directories (`src/`, `tests/`, `assets/`).
 
@@ -65,9 +67,9 @@ Present the exact directory map before writing any files:
 ├── tests/              # Unit and integration test suites
 ├── assets/ (or data/)  # Knowledge bases, JSON/SQLite schemas, fixtures
 ├── others/             # Quarantine cache for raw third-party repos (gitignored)
-└── projects.md         # Provenance and license compliance log
+└── projects.md         # Provenance inventory and license tracking log
 ```
-Map which harvested repository supplies which piece of the blueprint and verify commercial licenses.
+Map which harvested repository supplies which piece of the blueprint, noting their licenses for in-code provenance tagging.
 
 #### 3. Ask for User Approval
 Present the plan concisely and wait for user confirmation or adjustments.
@@ -91,18 +93,30 @@ Once the plan is approved:
 ---
 
 ### Phase 3: Surgical Transfusion & Porting (Step-by-Step in Chat)
-Do not dump raw third-party code directly into `src/`. Execute clean transfusions:
+Do not dump raw third-party code directly into `src/`. Execute clean transfusions with **Mandatory Provenance Tagging**:
 
 1. **Curated Datasets / Knowledge Bases:**
    - Move or adapt JSON/CSV/SQLite files from `others/<repo>/...` into `assets/` (or `data/`).
+   - For JSON/YAML files, include a top-level `"_provenance"` metadata block or comment noting origin and license.
    - Write clean, typed loaders with error handling and validation.
 2. **Core Engines & Algorithms (The Clean Port):**
    - Read the source file from `others/<repo>/...`. Inspect with `peek.py` if needed.
    - Strip unwanted dependencies, proprietary bridges, and framework bloat.
    - Refactor to match your project's clean architecture in `src/`, naming standards, Pydantic models, and logging.
    - Add corresponding unit tests in `tests/`.
-3. **Provenance & License Compliance (`projects.md`):**
-   - Document the scavenged module in `projects.md`: record origin repo, original author, license type, and modifications made.
+3. **Mandatory In-Code Provenance Tagging (`[PIRATEGIT LOOT PROVENANCE]`):**
+   - **EVERY scavenged function, class, or module MUST include this docstring header:**
+     ```python
+     """
+     [PIRATEGIT LOOT PROVENANCE]
+     - Origin: https://github.com/<owner>/<repo> (path: <path/to/source/file>)
+     - Original License: <License Name> (e.g. GPL-3.0, MIT, Apache-2.0, None / All Rights Reserved)
+     - Usage Status: ⚠️ PoC / Prototipo Experimental
+     - Production Note: Si este proyecto pasa a producción comercial, revisar la licencia.
+                        (Permisiva = uso directo | Copyleft/Privativa = reescribir con Clean-Room).
+     """
+     ```
+   - Log the asset in `projects.md` with date, origin repository, original license, and modifications.
 
 ---
 
@@ -111,13 +125,18 @@ Before declaring any `/loot` task complete, the agent **MUST** run the Quality T
 
 #### 1. The Devil's Advocate / Critic (`critic` subagent or adversarial review):
 Review the ported code in `src/` and `tests/` relentlessly looking for:
-- 🕵️ **License Contamination:** Did any copyleft or unknown-license snippet slip into our commercial code?
+- 🏷️ **100% Provenance Tag Coverage:** Did any scavenged function, class, or dataset miss its `[PIRATEGIT LOOT PROVENANCE]` tag? Every borrowed piece must be traceable.
 - 🧹 **Dead Code & Zombie Dependencies:** Are there unused imports, remnants of third-party helper utils, or hardcoded paths?
 - ⚡ **Architecture Drift:** Is all business code confined to `src/`? Are fixtures properly placed in `assets/` or `tests/`?
 - 🧪 **Test & Typing Coverage:** Are types complete (no `Any` escape hatches)? Are tests present in `tests/`?
 
 #### 2. The Judge Verdict (`judge` subagent or formal sign-off):
-The Judge evaluates the Critic's findings and issues a structured ruling:
-- **Verdict:** `🟢 APPROVED FOR PRODUCTION` or `🟡 NEEDS REFACTORING`.
-- **Actionable Remediation:** If anything failed the Critic's inspection, provide the exact 1–2 line fixes and apply them immediately.
-- **Enterprise Provenance Badge:** A final sign-off confirming zero license risk and clean architectural integration.
+The Judge evaluates the Critic's findings and generates the **Loot Provenance Inventory Table**:
+
+| Componente Portado | Archivo Destino | Repositorio Origen | Licencia Origen | Estado para Producción |
+|---|---|---|---|---|
+| `ejemplo_funcion()` | `src/core/engine.py` | `owner/repo1` | `GPL-3.0` | ⚠️ PoC Only (Reescribir Clean-Room antes de producción) |
+| `dataset_schema.json` | `assets/data.json` | `owner/repo2` | `MIT` | 🟢 Listo para producción comercial |
+
+- **Verdict:** `🟢 PROVENANCE AUDITED & READY FOR EXPERIMENTATION` (or `🟡 NEEDS REMEDIATION` if tags or tests are missing).
+- **Remediation:** If any function lacked provenance tags or failed tests, apply the fix immediately before closing the task.

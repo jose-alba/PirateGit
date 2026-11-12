@@ -133,15 +133,15 @@ If your project is empty or greenfield and one of the explored repositories alre
 ```
 
 ### How the Agent Executes `/loot`:
-1. **Architectural Alignment & Baseline Selection:** Evaluates your workspace, proposes standard `src/`, `tests/`, `assets/` layout (or baseline adoption), and maps code/data sources. Asks for confirmation before modifying files.
+1. **Architectural Alignment & Baseline Selection:** Evaluates your workspace, proposes standard `src/`, `tests/`, `assets/` layout (or baseline adoption), and maps code/data sources. Works for any candidate regardless of license for early-stage PoCs. Asks for confirmation before modifying files.
 2. **Harvest to `others/`:** Downloads candidate repositories or specific subdirectories into a local `others/<repo>` folder (kept in `.gitignore` so your repo stays lightweight).
-3. **Surgical Transfusion:**
-   - Adapts datasets into `assets/` (or `data/`) with typed loaders.
-   - Refactors core engines into `src/`: strips proprietary dependencies, cleans imports, applies your coding style, and adds unit tests in `tests/`.
-   - Logs source attribution and license provenance in `projects.md`.
+3. **Surgical Transfusion with In-Code Provenance Tagging:**
+   - Adapts datasets into `assets/` (or `data/`) with typed loaders and metadata.
+   - Refactors core engines into `src/`: cleans dependencies and adapts to your architecture and typing standards.
+   - **Mandatory In-Code Provenance Tagging:** Injects a standard `[PIRATEGIT LOOT PROVENANCE]` docstring block into every scavenged function/class, noting origin repository, original license, and a clear production warning (Permissive = ready; Copyleft/Proprietary = requires Clean-Room rewrite before shipping).
 4. **Mandatory Quality Tribunal:**
-   - 🕵️ **The Critic Subagent:** Relentlessly audits ported code for license contamination (`GPL` leaks), dead code, zombie dependencies, and architecture drift.
-   - ⚖️ **The Judge Subagent:** Reviews findings and issues a formal verdict (`🟢 APPROVED FOR PRODUCTION` or `🟡 NEEDS REFACTORING`) with instant remediation before sign-off.
+   - 🕵️ **The Critic Subagent:** Audits ported code for 100% provenance tag coverage, dead code, zombie dependencies, and architecture cleanliness.
+   - ⚖️ **The Judge Subagent:** Reviews findings and outputs the **Loot Provenance Inventory Table** (Origin, License, Production Status) and delivers the sign-off verdict (`🟢 PROVENANCE AUDITED & READY FOR EXPERIMENTATION`).
 
 ---
 
