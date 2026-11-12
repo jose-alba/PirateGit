@@ -14,11 +14,14 @@ import json
 import sys
 from pathlib import Path
 
+# Support installed skill (common inside scripts/) and local repo development (skills/common)
 _SCRIPT_DIR = Path(__file__).resolve().parent
-if str(_SCRIPT_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPT_DIR))
+for _candidate in [_SCRIPT_DIR, _SCRIPT_DIR.parents[1]]:
+    if (_candidate / "common").exists() and str(_candidate) not in sys.path:
+        sys.path.insert(0, str(_candidate))
+        break
 
-from lib.tree import xray_single_repo
+from common.tree import xray_single_repo
 
 
 def run_xray(repos: list[str], as_json: bool = False) -> None:

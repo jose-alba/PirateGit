@@ -36,24 +36,28 @@ Each skill is completely decoupled and self-contained with its own executable sc
 ```text
 PirateGit/
 ├── skills/
+│   ├── common/                       # Single shared core (network, scoring, channels, tree)
+│   │   ├── utils.py                  # Zero-quota HTTP, caching, licenses & slug parser
+│   │   ├── channels.py               # GitHub API, Topics, HN Algolia & Reddit public search
+│   │   ├── scoring.py                # DeepGit composite scoring formula
+│   │   └── tree.py                   # Anatomical zero-clone tree parser & hygiene calculator
+│   │
 │   ├── explore/
 │   │   ├── SKILL.md                  # Reconnaissance protocol
 │   │   └── scripts/
 │   │       ├── explore.py            # 4-channel search & DeepGit scoring
 │   │       ├── xray.py               # Zero-clone anatomical tree inspection
-│   │       ├── peek.py               # Zero-quota file reader
-│   │       └── lib/                  # Shared client, scoring, and channel helpers
+│   │       └── peek.py               # Zero-quota file reader
 │   │
 │   └── loot/
 │       ├── SKILL.md                  # Architecture, baseline adoption, harvesting & tribunal protocol
 │       └── scripts/
 │           ├── harvest.py            # Quarantine downloader into others/
 │           ├── files.py              # File-tree path filter
-│           ├── peek.py               # Zero-quota file reader
-│           └── lib/                  # Shared client, scoring, and tree helpers
+│           └── peek.py               # Zero-quota file reader
 │
 ├── docs/assets/                      # Badges, logo, and illustrations
-├── install.ps1 / install.sh          # One-line cross-platform installers
+├── install.ps1 / install.sh          # One-line cross-platform installers (distributes common to skills)
 ├── README.md
 └── LICENSE
 ```

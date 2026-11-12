@@ -41,11 +41,13 @@ Generate:
 2. **2 to 4 canonical GitHub Topic slugs** (e.g., `pcb-design`, `eda`, `autorouter`).
 
 ### Step 3: Dispatch Parallel Pirate Scouts (Subagent Search Fleet)
-Run the self-contained explore script (relative to skill or project):
+Run the self-contained explore script (installed globally or relative to project):
 ```powershell
-python .agents/skills/explore/scripts/explore.py "query 1" "query 2" "query 3" --topics topic-one topic-two --50repos
+# Windows (Antigravity / Gemini):
+python "$env:USERPROFILE\.gemini\config\skills\explore\scripts\explore.py" "query 1" "query 2" "query 3" --topics topic-one topic-two --50repos
+
+# (Or Claude Code: python "$env:USERPROFILE\.claude\skills\explore\scripts\explore.py" ... | Linux/macOS: python "$HOME/.gemini/config/skills/explore/scripts/explore.py" ... | Local repo: python skills/explore/scripts/explore.py ...)
 ```
-*(Or `python skills/explore/scripts/explore.py ...` if in repo root).*
 
 This searches **GitHub Search + GitHub Topics + Hacker News (Algolia) + Reddit (Public JSON & PullPush archive)** in parallel, downloads clean `README.md` extracts via `raw.githubusercontent.com` (0 API quota), and scores candidates using the DeepGit composite signal formula (`relevance`, `maintenance`, `popularity`, `health`).
 
@@ -61,12 +63,14 @@ Review candidate `README.md` digests strictly against the **Objective & Requirem
 Run `xray.py` on the **top 10 relevant repositories** (highest composite score passing triage) in parallel to dissect their complete internal file trees without cloning:
 
 ```powershell
-python .agents/skills/explore/scripts/xray.py owner1/repo1 owner2/repo2 owner3/repo3
+python "$env:USERPROFILE\.gemini\config\skills\explore\scripts\xray.py" owner1/repo1 owner2/repo2 owner3/repo3
+# (Or: python skills/explore/scripts/xray.py ...)
 ```
 
 *(Optional)* Inspect specific core algorithm or data files with `peek.py`:
 ```powershell
-python .agents/skills/explore/scripts/peek.py owner/repo path/to/file.py --max-lines 120
+python "$env:USERPROFILE\.gemini\config\skills\explore\scripts\peek.py" owner/repo path/to/file.py --max-lines 120
+# (Or: python skills/explore/scripts/peek.py ...)
 ```
 
 ### Step 6: Deliver Intelligence Report (in User's Language)

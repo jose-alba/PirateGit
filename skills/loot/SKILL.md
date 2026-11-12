@@ -78,11 +78,13 @@ Present the plan concisely and wait for user confirmation or adjustments.
 Once the plan is approved:
 1. Harvest approved repositories (or specific subdirectories) into `others/` using `harvest.py`:
    ```powershell
-   # Download specific directories or files into others/<repo>/
-   python skills/loot/scripts/harvest.py owner/repo --dest others --paths path/to/data path/to/engine
+   # Windows (Antigravity / Gemini):
+   python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\harvest.py" owner/repo --dest others --paths path/to/data path/to/engine
 
    # Or download the complete repository archive
-   python skills/loot/scripts/harvest.py owner/repo --dest others
+   python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\harvest.py" owner/repo --dest others
+
+   # (Or Claude Code: "$env:USERPROFILE\.claude\skills\loot\scripts\harvest.py" | Linux/macOS: "$HOME/.gemini/config/skills/loot/scripts/harvest.py" | Local: python skills/loot/scripts/harvest.py)
    ```
 2. Ensure `others/` is added to `.gitignore` so raw third-party code is never tracked.
 

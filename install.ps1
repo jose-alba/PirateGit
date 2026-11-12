@@ -1,4 +1,4 @@
-# PirateGit Installation Script for Windows (PowerShell)
+﻿# PirateGit Installation Script for Windows (PowerShell)
 $ErrorActionPreference = "Stop"
 
 Write-Host "🏴‍☠️ Installing PirateGit Agent Skills..." -ForegroundColor Cyan
@@ -25,6 +25,12 @@ if (Test-Path "$env:USERPROFILE\.gemini") {
 
     Copy-Item "$SourceRoot\explore\*" "$AntigravitySkills\explore\" -Recurse -Force
     Copy-Item "$SourceRoot\loot\*" "$AntigravitySkills\loot\" -Recurse -Force
+
+    # Distribute shared common package into each skill so they are 100% self-contained
+    New-Item -ItemType Directory -Force -Path "$AntigravitySkills\explore\scripts\common" | Out-Null
+    New-Item -ItemType Directory -Force -Path "$AntigravitySkills\loot\scripts\common" | Out-Null
+    Copy-Item "$SourceRoot\common\*" "$AntigravitySkills\explore\scripts\common\" -Recurse -Force
+    Copy-Item "$SourceRoot\common\*" "$AntigravitySkills\loot\scripts\common\" -Recurse -Force
     Write-Host "✅ Installed into Google Antigravity ($AntigravitySkills)" -ForegroundColor Green
 }
 
@@ -35,6 +41,12 @@ if (Test-Path "$env:USERPROFILE\.claude") {
 
     Copy-Item "$SourceRoot\explore\*" "$ClaudeSkills\explore\" -Recurse -Force
     Copy-Item "$SourceRoot\loot\*" "$ClaudeSkills\loot\" -Recurse -Force
+
+    # Distribute shared common package into each skill so they are 100% self-contained
+    New-Item -ItemType Directory -Force -Path "$ClaudeSkills\explore\scripts\common" | Out-Null
+    New-Item -ItemType Directory -Force -Path "$ClaudeSkills\loot\scripts\common" | Out-Null
+    Copy-Item "$SourceRoot\common\*" "$ClaudeSkills\explore\scripts\common\" -Recurse -Force
+    Copy-Item "$SourceRoot\common\*" "$ClaudeSkills\loot\scripts\common\" -Recurse -Force
     Write-Host "✅ Installed into Claude Code ($ClaudeSkills)" -ForegroundColor Green
 }
 
