@@ -22,15 +22,20 @@ Each helper is completely decoupled and self-contained in `scripts/`:
 ## Command Syntax
 
 The user can invoke `/explore` with:
+- `/explore` *(Zero-args mode: automatically inspects the current workspace/repository [README.md, manifests, core files], synthesizes the North Star, and scouts similar projects)*
 - `/explore <goal, feature, or project description>` *(Default scope: **100 repositories**)*
-- `/explore <goal> --150repos` *(or `--50repos`, `--200repos`, etc. to override scope)*
+- `/explore [goal] --150repos` *(or `--50repos`, `--200repos`, etc. to override scope)*
 
 ---
 
 ## 6-Step Execution Protocol with Parallel Scouts
 
 ### Step 1: Goal Synthesis & Technical Requirements Framing (The North Star)
-Analyze the user's prompt and explicitly define the **Objective & Requirements Frame**:
+- **Automatic Workspace Inspection (if invoked as `/explore` with no args):**  
+  First read the local workspace's `README.md`, package manifests (`pyproject.toml`, `package.json`, `requirements.txt`, etc.), and core source files. Synthesize what this project does, its core domains, and technical requirements.
+- **Explicit Goal (if prompt provided):** Analyze the user's prompt.
+
+Explicitly define the **Objective & Requirements Frame**:
 1. **Target Objective (North Star):** 1–2 sentences on what tangible system is being built and what "done" looks like.
 2. **Hard Requirements (Must-Haves):** Target runtime/language, input/output data formats, and permissive licensing (`🟢 MIT`, `Apache-2.0`, `BSD`).
 3. **Anti-Patterns & Red Lines (Discard Criteria):** Proprietary lock-in, GPU-only training when seeking lightweight heuristics, or incompatible copyleft (`🟡 GPL`).

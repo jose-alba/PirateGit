@@ -74,6 +74,7 @@ Synthesizes your ultimate objective, deploys a **fleet of parallel scouting suba
 
 ### Chat Syntax
 ```text
+/explore                                  # Context-aware: reads current repo & finds similar projects
 /explore <your goal or feature>           # Scans 100 repositories by default
 /explore <your goal> --150repos           # Override default scope
 /explore <your goal> --50repos
