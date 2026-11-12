@@ -15,6 +15,7 @@ from .utils import (
     http_get_text,
     parse_repo_slug,
     fetch_repo_readme_digest,
+    smart_truncate_output,
 )
 from .scoring import (
     extract_intent_terms,
@@ -47,6 +48,7 @@ __all__ = [
     "http_get_text",
     "parse_repo_slug",
     "fetch_repo_readme_digest",
+    "smart_truncate_output",
     "extract_intent_terms",
     "score_repository",
     "search_github_api",

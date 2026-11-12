@@ -110,3 +110,38 @@ def fetch_repo_readme_digest(
 
     return "[No README found in main/master]"
 
+
+def smart_truncate_output(
+    text: str,
+    max_lines: int = 16,
+    max_chars: int = 1200,
+    keep_head: int = 8,
+    keep_tail: int = 5,
+) -> str:
+    """
+    [PIRATEGIT LOOT PROVENANCE]
+    - Origin: https://github.com/rtk-ai/rtk (adapted token-saving CLI output truncation heuristics)
+    - Original License: Apache-2.0
+    - Usage Status: ⚠️ PoC / Prototipo Experimental
+    - Production Note: Si este proyecto pasa a producción comercial, revisar la licencia.
+                       (Permisiva = uso directo | Copyleft/Privativa = reescribir con Clean-Room).
+    """
+    if not text:
+        return ""
+    lines = text.splitlines()
+    if len(lines) <= max_lines and len(text) <= max_chars:
+        return text
+
+    if len(lines) > max_lines:
+        head_lines = lines[:keep_head]
+        tail_lines = lines[-keep_tail:] if keep_tail > 0 else []
+        skipped = len(lines) - len(head_lines) - len(tail_lines)
+        truncated_body = "\n".join(head_lines) + f"\n... [✂️ RTK-Style Token Saver: {skipped} lines collapsed] ...\n" + "\n".join(tail_lines)
+    else:
+        truncated_body = text
+
+    if len(truncated_body) > max_chars:
+        truncated_body = truncated_body[:max_chars].rstrip() + "\n... [✂️ Output capped at char limit] ..."
+
+    return truncated_body
+
