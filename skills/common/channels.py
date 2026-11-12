@@ -60,15 +60,24 @@ def normalize_gh_repo(raw: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def search_github_api(query: str, limit: int = 15) -> List[Dict[str, Any]]:
-    encoded = urllib.parse.quote_plus(query)
-    url = f"https://api.github.com/search/repositories?q={encoded}&sort=stars&order=desc&per_page={limit}"
+def search_github_api(
+    query: str,
+    limit: int = 15,
+    sort: str = "",
+    source_prefix: str = "gh",
+) -> List[Dict[str, Any]]:
+    params = {"q": query, "per_page": str(min(limit, 100))}
+    if sort in ("stars", "updated"):
+        params["sort"] = sort
+        params["order"] = "desc"
+    encoded = urllib.parse.urlencode(params)
+    url = f"https://api.github.com/search/repositories?{encoded}"
     txt, err = http_get_text(url, timeout=15)
     if not txt or err:
         return []
     try:
         data = json.loads(txt)
-        return [normalize_gh_repo(it) for it in data.get("items", [])]
+        return [normalize_gh_repo(it) for it in data.get("items", []) if not it.get("fork")]
     except Exception:
         return []
 
