@@ -45,13 +45,13 @@ def auto_derive_topics(queries: List[str], explicit_topics: Optional[List[str]])
             slug = "-".join(words)
             if slug not in derived and len(slug) >= 3:
                 derived.append(slug)
-    return derived[:3]
+    return derived[:6]
 
 
 def run_explore(
     queries: List[str],
     topics: Optional[List[str]] = None,
-    max_total: int = 50,
+    max_total: int = 100,
     sort: str = "",
     no_hn: bool = False,
     no_reddit: bool = False,
@@ -206,7 +206,7 @@ def main() -> None:
     parser.add_argument("queries", nargs="+", help="Search keyword queries (1-3 core words per query)")
     parser.add_argument("--topics", nargs="*", help="Optional canonical topic slugs")
     parser.add_argument("--limit", type=int, default=15, help="Min results per query")
-    parser.add_argument("--max-total", type=int, default=50, help="Max total repos to return")
+    parser.add_argument("--max-total", type=int, default=100, help="Max total repos to return (default: 100)")
     parser.add_argument("--sort", choices=["", "stars", "updated"], default="", help="GitHub sort order")
     parser.add_argument("--no-hn", action="store_true", help="Disable Hacker News Algolia discovery")
     parser.add_argument("--no-reddit", action="store_true", help="Disable Reddit / PullPush discovery")

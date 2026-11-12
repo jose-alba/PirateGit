@@ -74,23 +74,23 @@ Synthesizes your ultimate objective, deploys a **fleet of parallel scouting suba
 
 ### Chat Syntax
 ```text
-/explore <your goal or feature>
-/explore <your goal> --100repos
-/explore <your goal> --20repos
+/explore <your goal or feature>           # Scans 100 repositories by default
+/explore <your goal> --150repos           # Override default scope
+/explore <your goal> --50repos
 ```
 
 ### Examples
 ```text
 /explore automatic pcb placement in python
-/explore markdown parsing with AST and table support --50repos
-/explore local rag vector search without external apis --20repos
+/explore markdown parsing with AST and table support
+/explore local rag vector search without external apis --50repos
 ```
 
 ### What You Get in Response:
 1. **Target Frame:** Your North Star goal, hard requirements, and discard criteria (red lines).
-2. **Fleet Triage Summary:** Breakdown of 50+ repositories scanned across GitHub, Topics, Hacker News, and Reddit.
-3. **Structured SWOT (DAFO) Table (Top 10):** A concise side-by-side comparison table featuring Strengths, Weaknesses, Loot Opportunities, and Licensing Threats for the top 10 candidates.
-4. **Ranked Loot Table (Top 10):** Sorted by composite score, commercial license traffic light (`🟢 Permissive / 🟡 Copyleft / 🔴 No License`), language/size, and exact scavengeable assets (datasets, algorithms, prompts, libraries). Capped at the Top 10 highest-scoring repositories to keep context clean and actionable.
+2. **Multi-Angle Expansion & Fleet Triage:** Expands queries across 3 vectors (Direct Synonyms, Lateral Domains, Subsystems/Internal Parts) and reviews **100 candidate repositories** across GitHub, Topics, Hacker News, and Reddit.
+3. **Structured SWOT (DAFO) Table (Top Candidates):** Side-by-side comparison table featuring Strengths, Weaknesses, Loot Opportunities, and Licensing Threats for top candidates (10 is an orientative baseline; includes more when they offer distinct value).
+4. **Ranked Loot Table (Top Candidates):** Sorted by composite score, commercial license traffic light (`🟢 Permissive / 🟡 Copyleft / 🔴 No License`), language/size, and exact scavengeable assets (datasets, algorithms, prompts, libraries).
 5. **Full Tables on Demand:** Clear footer notice to prompt the agent whenever you want to see the remaining repositories or deep-dive into any specific candidate.
 
 ---
