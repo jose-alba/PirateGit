@@ -132,7 +132,7 @@ def search_reddit_public_fallback(query: str, limit: int = 15) -> List[str]:
         return []
 
 
-def fetch_repo_metadata(slug: str) -> Optional[Dict[str, Any]]:
+def fetch_repo_metadata(slug: str, source_tag: str = "discovery") -> Optional[Dict[str, Any]]:
     clean_slug = parse_repo_slug(slug)
     url = f"https://api.github.com/repos/{clean_slug}"
     txt, err = http_get_text(url, timeout=12)
