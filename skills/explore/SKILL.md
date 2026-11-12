@@ -77,13 +77,26 @@ python "$env:USERPROFILE\.gemini\config\skills\explore\scripts\peek.py" owner/re
 Respond in the language used by the user (e.g. Spanish if prompted in Spanish) with 4 structured sections:
 1. **Marco de Objetivo y Requisitos (Target Frame):** North Star, Hard Requirements, and Discard Criteria.
 2. **Resumen de la Flota de Exploración (Fleet Triage Summary):** Repos scanned across all channels and relevance breakdown.
-3. **Tabla Comparativa de Botín (Comparative Loot Table — Máximo Top 10):**
-   Presenta la tabla comparativa con **como mucho 10 repositorios** (los que tienen mayor puntuación compuesta `composite_score`).
-   Columnas: Posición, Repositorio, Puntuación, Semáforo de Licencia (`🟢 Permisiva / 🟡 Copyleft / 🔴 Sin licencia`), Lenguaje/Tamaño y Botín Concreto Reutilizable.
-4. **Análisis DAFO (SWOT) Enfocado al Objetivo (Máximo Top 10):**
-   Muestra el desglose DAFO individual (Fortalezas, Debilidades, Oportunidades de Saqueo y Amenazas de Licencia/Riesgo) **únicamente para los 10 mejores repositorios**.
+3. **Tabla de Análisis DAFO / SWOT (Máximo Top 10):**
+   Presenta el análisis DAFO en formato de **tabla estructurada y sintética** (antes de la tabla de botín) para evaluar rápidamente la viabilidad técnica y legal de los 10 mejores repositorios:
+   Columnas:
+   - `#`: Posición por puntuación compuesta.
+   - `Repositorio`: Enlace markdown al repositorio (`owner/repo`).
+   - `Fortalezas (F)`: Calidad de código, tests, CI, modularidad o algoritmos punteros.
+   - `Debilidades (D)`: Desactualizado, dependencias pesadas, acoplamiento o falta de docs.
+   - `Oportunidades de Saqueo (O)`: Algoritmos clave a portar, datasets, schemas o prompts aprovechables.
+   - `Amenazas / Licencia (A)`: Riesgo legal (Copyleft `GPL/AGPL`, licencias ambiguas) o dependencias incompatibles.
+4. **Tabla Comparativa de Botín (Comparative Loot Table — Máximo Top 10):**
+   Presenta la tabla comparativa técnica y de recursos reutilizables con **como mucho 10 repositorios** (los que tienen mayor puntuación compuesta `composite_score`).
+   Columnas:
+   - `#`: Posición.
+   - `Repositorio`: Enlace markdown (`owner/repo`).
+   - `Puntuación`: Puntuación compuesta (ej. `0.87`).
+   - `Licencia`: Semáforo de Licencia (`🟢 Permisiva / 🟡 Copyleft / 🔴 Sin licencia`).
+   - `Lenguaje / Tamaño`: Lenguaje principal y tamaño en KB o MB.
+   - `Botín Concreto Reutilizable`: Rutas y nombres específicos de archivos de datos, motores, algoritmos o dependencias identificadas durante el `xray`.
 
 > [!NOTE]
 > **Aviso de expansión obligatoria al final del reporte:**
 > Incluye siempre al pie del reporte un mensaje claro ofreciendo consultar el resto de repositorios:
-> *"💡 **Mostrando los Top 10 repositorios por puntuación.** Si deseas ver la tabla comparativa con los repositorios restantes o un desglose DAFO detallado de cualquier otro repositorio escaneado, indícalo y te lo muestro."*
+> *"💡 **Mostrando los Top 10 repositorios por puntuación.** Si deseas ver la tabla DAFO o de botín con los repositorios restantes, o profundizar en el árbol de archivos de cualquiera de ellos, indícalo y te lo muestro."*

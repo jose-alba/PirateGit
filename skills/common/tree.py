@@ -187,3 +187,4 @@ def xray_single_repo(repo: str) -> Dict[str, Any]:
         },
         "dependencies_preview": deps_preview,
     }
+

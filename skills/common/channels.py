@@ -136,3 +136,4 @@ def fetch_repo_metadata(slug: str) -> Optional[Dict[str, Any]]:
         return None
     except Exception:
         return None
+

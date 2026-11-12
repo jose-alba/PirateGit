@@ -1,19 +1,19 @@
-﻿# PirateGit Installation Script for Windows (PowerShell)
+# PirateGit Installation Script for Windows (PowerShell)
 $ErrorActionPreference = "Stop"
 
-Write-Host "🏴‍☠️ Installing PirateGit Agent Skills..." -ForegroundColor Cyan
+Write-Host "[*] Installing PirateGit Agent Skills..." -ForegroundColor Cyan
 
 $AntigravitySkills = "$env:USERPROFILE\.gemini\config\skills"
 $ClaudeSkills = "$env:USERPROFILE\.claude\skills"
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 
 # 1. Determine source directories
-if (Test-Path "$ScriptDir\skills\explore") {
+if ($ScriptDir -and (Test-Path "$ScriptDir\skills\explore")) {
     $SourceRoot = "$ScriptDir\skills"
 } else {
     $TempZip = "$env:TEMP\PirateGit-main.zip"
-    Write-Host "📥 Downloading latest PirateGit release from GitHub..." -ForegroundColor Yellow
-    Invoke-WebRequest -Uri "https://github.com/username/PirateGit/archive/refs/heads/main.zip" -OutFile $TempZip
+    Write-Host "[>] Downloading latest PirateGit release from GitHub..." -ForegroundColor Yellow
+    Invoke-WebRequest -Uri "https://github.com/jose-alba/PirateGit/archive/refs/heads/main.zip" -OutFile $TempZip
     Expand-Archive -Path $TempZip -DestinationPath $env:TEMP -Force
     $SourceRoot = "$env:TEMP\PirateGit-main\skills"
 }
@@ -31,7 +31,7 @@ if (Test-Path "$env:USERPROFILE\.gemini") {
     New-Item -ItemType Directory -Force -Path "$AntigravitySkills\loot\scripts\common" | Out-Null
     Copy-Item "$SourceRoot\common\*" "$AntigravitySkills\explore\scripts\common\" -Recurse -Force
     Copy-Item "$SourceRoot\common\*" "$AntigravitySkills\loot\scripts\common\" -Recurse -Force
-    Write-Host "✅ Installed into Google Antigravity ($AntigravitySkills)" -ForegroundColor Green
+    Write-Host "[OK] Installed into Google Antigravity ($AntigravitySkills)" -ForegroundColor Green
 }
 
 # 3. Install to Claude Code (if present)
@@ -47,7 +47,7 @@ if (Test-Path "$env:USERPROFILE\.claude") {
     New-Item -ItemType Directory -Force -Path "$ClaudeSkills\loot\scripts\common" | Out-Null
     Copy-Item "$SourceRoot\common\*" "$ClaudeSkills\explore\scripts\common\" -Recurse -Force
     Copy-Item "$SourceRoot\common\*" "$ClaudeSkills\loot\scripts\common\" -Recurse -Force
-    Write-Host "✅ Installed into Claude Code ($ClaudeSkills)" -ForegroundColor Green
+    Write-Host "[OK] Installed into Claude Code ($ClaudeSkills)" -ForegroundColor Green
 }
 
-Write-Host "🎉 PirateGit is ready! Use /explore and /loot in your agent chat." -ForegroundColor Cyan
+Write-Host "[DONE] PirateGit is ready! Use /explore and /loot in your agent chat." -ForegroundColor Cyan

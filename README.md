@@ -89,9 +89,9 @@ Synthesizes your ultimate objective, deploys a **fleet of parallel scouting suba
 ### What You Get in Response:
 1. **Target Frame:** Your North Star goal, hard requirements, and discard criteria (red lines).
 2. **Fleet Triage Summary:** Breakdown of 50+ repositories scanned across GitHub, Topics, Hacker News, and Reddit.
-3. **Ranked Loot Table (Top 10):** Sorted by composite score, commercial license traffic light (`🟢 Permissive / 🟡 Copyleft / 🔴 No License`), and exact scavengeable assets (datasets, algorithms, prompts, libraries). Capped at the Top 10 highest-scoring repositories to keep context clean and actionable.
-4. **Individual SWOT (DAFO) Analysis (Top 10):** Focused strengths, weaknesses, loot opportunities, and licensing threats for each of the top 10 repositories.
-5. **Full Table on Demand:** Clear footer notice to prompt the agent whenever you want to see the remaining repositories or deep-dive into any specific candidate.
+3. **Structured SWOT (DAFO) Table (Top 10):** A concise side-by-side comparison table featuring Strengths, Weaknesses, Loot Opportunities, and Licensing Threats for the top 10 candidates.
+4. **Ranked Loot Table (Top 10):** Sorted by composite score, commercial license traffic light (`🟢 Permissive / 🟡 Copyleft / 🔴 No License`), language/size, and exact scavengeable assets (datasets, algorithms, prompts, libraries). Capped at the Top 10 highest-scoring repositories to keep context clean and actionable.
+5. **Full Tables on Demand:** Clear footer notice to prompt the agent whenever you want to see the remaining repositories or deep-dive into any specific candidate.
 
 ---
 

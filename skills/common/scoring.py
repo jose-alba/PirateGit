@@ -105,3 +105,4 @@ def score_repository(repo: Dict[str, Any], intent_terms: Set[str]) -> None:
         "health": round(health, 2),
         "freshness": f"{days_ago}d ago" if days_ago < 999 else freshness,
     }
+

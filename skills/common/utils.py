@@ -109,3 +109,4 @@ def fetch_repo_readme_digest(
                 return digest if digest else "[Empty or non-text README]"
 
     return "[No README found in main/master]"
+
