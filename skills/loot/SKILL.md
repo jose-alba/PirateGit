@@ -10,9 +10,10 @@ description: >-
 
 The `/loot` skill follows the intelligence gathered by `/explore`. It acts as an **Architect, Surgical Scavenger, and Quality Tribunal**:
 1. It inherits the **Objective & Requirements Frame** from `/explore` and applies any user exclusions/constraints.
-2. **Unrestricted PoC & Prototype Looting:** In exploratory, prototyping, and greenfield phases, innovation and velocity come first. **You may harvest and port code or data from ANY candidate repository regardless of license** (including Copyleft `GPL/AGPL`, restrictive, or unlicensed code).
+2. **Unrestricted PoC & Prototype Looting:** In exploratory, prototyping, and greenfield phases, innovation and velocity come first. **You may harvest and port code or data from ANY candidate repository regardless of license** (including Copyleft `GPL/AGPL`, restrictive, or unlicensed code). Ninguna licencia descalifica ni puntúa negativo.
 3. **Mandatory In-Code Provenance Tagging (Taint Tracking):** Because unvetted code must never silently seep into production later on, **every single scavenged function, class, data file, or schema MUST be explicitly tagged with a standardized `[PIRATEGIT LOOT PROVENANCE]` docstring/header**.
-4. **Empty Project or Greenfield Scenarios (Fast-Track Baseline):** If the workspace is empty or starting from scratch, it evaluates if one of the top explored repositories already possesses a mature, battle-tested architecture and class hierarchy matching the target. If so, it proposes adopting that repository as the **Architectural Baseline**, extracting its structural foundation, and pruning/modifying on top of it rather than building from a blank slate.
+4. **Empty Project or Greenfield Scenarios (Fast-Track Baseline):** If the workspace is empty or starting from scratch, evaluate if one of the top explored repositories already possesses a mature, battle-tested architecture and class hierarchy matching the target. If so, adopt that repository as the **Architectural Baseline**, extracting its structural foundation, and building on top of it.
+5. **Adopción de Subsistemas como Caja Negra (Black-Box Reuse):** Si un repositorio o paquete explorado está tan bien montado y desacoplado que resuelve una parte completa de nuestro sistema (ej. motor de subtítulos, ducking de audio, rendering FFmpeg), **podemos mantenerlo entero y usarlo directamente como caja negra**. No modificamos código que ya funciona bien; simplemente lo ubicamos en su propio módulo (ej. `src/modules/<componente>/`), creamos una interfaz o wrapper limpio y registramos su procedencia.
 5. **Standard Project Conventions:** Enforces enterprise industry standards for project layout:
    - `src/`: All application source code, domain models, and core logic.
    - `tests/`: Automated unit and integration test suites.
@@ -53,15 +54,20 @@ The user may invoke `/loot` with freeform natural-language instructions or zero 
 - **Zero-Args `/loot`:** Read `.../agy_github_scout_cache/last_explore_digest.md`. Automatically select the top 2–4 candidates and their identified loot assets (data files, core algorithms, prompt templates) as the target harvest list.
 - **Prompted `/loot`:** Interpret user preferences, filters, and exclusions to define the exact target assets.
 
-#### 2. Baseline Architecture Strategy (Greenfield / Empty Workspace)
-Check if the current workspace is empty or lacks clear structure:
+#### 2. Baseline & Subsystem Architecture Strategy
+Evaluate the project state and the candidate repositories:
 - **Case A: Empty Project + Strong Architectural Match Exists in `/explore`**
-  If one explored repository already has an exceptional, battle-tested layout, class hierarchy, and dependency setup closely matching our North Star:
-  - Recommend adopting it as the **Architectural Baseline** (regardless of license for early PoC prototyping).
-  - Harvest its foundation into the project (creating standard `src/`, `tests/`, `assets/`, `docs/` directories).
-  - Plan surgical modifications, pruning unneeded parts and swapping in better algorithms from secondary repos.
-- **Case B: Existing Project Structure or Custom Design**
-  Align with the existing workspace structure, ensuring all ported code cleanly integrates into standard directories (`src/`, `tests/`, `assets/`).
+  If an explored repository has a mature, battle-tested layout and class hierarchy matching our North Star:
+  - Adopt it as the **Architectural Baseline** (regardless of license for prototyping).
+  - Extract its foundation into the project layout (`src/`, `tests/`, `assets/`, `docs/`).
+  - Prune unneeded parts and swap in specialized algorithms from secondary repos.
+- **Case B: Black-Box Integration of Complete Subsystems**
+  If a repository or submodule is exceptionally well engineered and covers an entire subsystem needed by our application:
+  - Keep the component **entirely intact as a black box** (e.g. `src/modules/<subsystem>/` or `src/vendor/<subsystem>/`).
+  - Do not rewrite or modify working code; build a clean typed wrapper/adapter to interface with the rest of `src/`.
+  - Tag the module root with `[PIRATEGIT LOOT PROVENANCE]` and register it in `projects.md`.
+- **Case C: Custom Greenfield Architecture + Surgical Transfusion**
+  Design our own clean architecture in `src/` and surgically harvest only specific algorithms, schemas, or data files from the candidates.
 
 #### 3. Propose the Target Blueprint & Staging Plan
 Present the directory map and the files to be staged before writing:

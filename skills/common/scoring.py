@@ -3,11 +3,11 @@
 DeepGit Composite Scoring Formula
 =================================
 Signals:
-- relevance (0.0 - 1.0): token overlap with queries/topics + match hits
-- maintenance (0.0 - 1.0): freshness based on updated_at / pushed_at
-- popularity (0.0 - 1.0): log-scaled star count
-- health (0.0 - 1.0): license status, description, size
-- composite_score (0.0 - 1.0): 0.45*rel + 0.25*pop + 0.20*maint + 0.10*health
+- relevance (0.0 - 1.0): token overlap with queries/topics + match hits (dominant factor: 70%)
+- maintenance (0.0 - 1.0): freshness based on updated_at / pushed_at (15%)
+- health (0.0 - 1.0): description quality & code presence (10%)
+- popularity (0.0 - 1.0): log-scaled star count (minor factor: 5%, stars do not determine utility)
+- composite_score (0.0 - 1.0): 0.70*rel + 0.15*maint + 0.10*health + 0.05*pop
 """
 
 from __future__ import annotations
@@ -79,21 +79,19 @@ def score_repository(repo: Dict[str, Any], intent_terms: Set[str]) -> None:
     else:
         maintenance = 0.15
 
-    # 4. Health & License
-    lic = str(repo.get("license_verdict", ""))
-    if "🟢" in lic:
-        lic_score = 1.0
-    elif "🟡" in lic:
-        lic_score = 0.65
-    else:
-        lic_score = 0.30
+    # 4. Health & Scavengeable Content
+    # All licenses (permissive, copyleft, unlicensed) are 100% accepted for rapid prototyping.
+    # Licenses do not penalize the score; they are logged for provenance tracking.
+    desc_score = 1.0 if (repo.get("description") and len(repo["description"]) > 15) else 0.5
+    size_kb = int(repo.get("size", 0))
+    content_score = 1.0 if size_kb > 5 else 0.4
+    health = 0.5 * desc_score + 0.5 * content_score
 
-    desc_score = 1.0 if (repo.get("description") and len(repo["description"]) > 15) else 0.4
-    health = 0.6 * lic_score + 0.4 * desc_score
-
-    # Composite Score
+    # Composite Score:
+    # Relevance and technical fit are the primary drivers (70%).
+    # Popularity (stars) is de-emphasized (5%) because small, focused repos often contain the best reusable logic.
     composite = round(
-        0.45 * relevance + 0.25 * popularity + 0.20 * maintenance + 0.10 * health,
+        0.70 * relevance + 0.15 * maintenance + 0.10 * health + 0.05 * popularity,
         3,
     )
 
