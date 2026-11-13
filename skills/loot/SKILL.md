@@ -26,6 +26,7 @@ The `/loot` skill follows the intelligence gathered by `/explore`. It acts as an
 
 Each helper is completely decoupled and self-contained in `scripts/`:
 - Quarantine & selective downloader: [harvest.py](./scripts/harvest.py)
+- Staging queue & burn-down minitool: [stage.py](./scripts/stage.py)
 - File tree path filter: [files.py](./scripts/files.py)
 - Zero-quota file peeker: [peek.py](./scripts/peek.py)
 
@@ -33,10 +34,11 @@ Each helper is completely decoupled and self-contained in `scripts/`:
 
 ## Command Syntax & Input Flexibility
 
-The user may invoke `/loot` with freeform natural-language instructions, preferences, or exclusions:
-- `/loot` *(Inherits top recommendations and North Star from `/explore` and proposes the blueprint)*
+The user may invoke `/loot` with freeform natural-language instructions or zero arguments:
+- `/loot` *(Zero-args mode: automatically takes the top candidates and key assets identified in the last `/explore` scan, harvests them into `others/`, populates `staging/`, and starts the burn-down pipeline)*
 - `/loot <owner/repo1> <owner/repo2> with instructions...`
 - Examples:
+  - `/loot` *(Full automatic pipeline: inherit explore recommendations, harvest, stage, and burn down)*
   - `/loot use the dataset from viaduct and the placement engine from eda-agent, but ignore altium stuff`
   - `/loot this project is empty, use the repo structure of repoA as baseline and port repoB algorithms into src/`
   - `/loot only the stackup json and routing algorithms, adapt them to our src layout with assets/ and tests/`
@@ -47,7 +49,11 @@ The user may invoke `/loot` with freeform natural-language instructions, prefere
 
 ### Phase 1: Objective Alignment & Architecture Blueprint
 
-#### 1. Baseline Architecture Strategy (Greenfield / Empty Workspace)
+#### 1. Zero-Args Auto-Inference or Prompt Interpretation
+- **Zero-Args `/loot`:** Read `.../agy_github_scout_cache/last_explore_digest.md`. Automatically select the top 2–4 candidates and their identified loot assets (data files, core algorithms, prompt templates) as the target harvest list.
+- **Prompted `/loot`:** Interpret user preferences, filters, and exclusions to define the exact target assets.
+
+#### 2. Baseline Architecture Strategy (Greenfield / Empty Workspace)
 Check if the current workspace is empty or lacks clear structure:
 - **Case A: Empty Project + Strong Architectural Match Exists in `/explore`**
   If one explored repository already has an exceptional, battle-tested layout, class hierarchy, and dependency setup closely matching our North Star:
@@ -57,66 +63,57 @@ Check if the current workspace is empty or lacks clear structure:
 - **Case B: Existing Project Structure or Custom Design**
   Align with the existing workspace structure, ensuring all ported code cleanly integrates into standard directories (`src/`, `tests/`, `assets/`).
 
-#### 2. Propose the Target Blueprint (Plan)
-Present the exact directory map before writing any files:
+#### 3. Propose the Target Blueprint & Staging Plan
+Present the directory map and the files to be staged before writing:
 ```text
 <project-root>/
+├── others/             # Quarantine cache for raw third-party repos (gitignored)
+├── staging/            # Temporary visual work queue (gitignored burn-down list)
 ├── src/                # Core domain logic, engines, interfaces
-│   ├── core/
-│   └── domains/
 ├── tests/              # Unit and integration test suites
 ├── assets/ (or data/)  # Knowledge bases, JSON/SQLite schemas, fixtures
-├── others/             # Quarantine cache for raw third-party repos (gitignored)
 └── projects.md         # Provenance inventory and license tracking log
 ```
-Map which harvested repository supplies which piece of the blueprint, noting their licenses for in-code provenance tagging.
-
-#### 3. Ask for User Approval
-Present the plan concisely and wait for user confirmation or adjustments.
 
 ---
 
-### Phase 2: Harvest to Contraband Cache (`others/`)
-Once the plan is approved:
-1. Harvest approved repositories (or specific subdirectories) into `others/` using `harvest.py`:
+### Phase 2: Harvest to Quarantine (`others/`) & Populate Staging (`staging/`)
+
+1. **Harvest Candidate Repositories into `others/`:**
    ```powershell
-   # Windows (Antigravity / Gemini):
    python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\harvest.py" owner/repo --dest others --paths path/to/data path/to/engine
-
-   # Or download the complete repository archive
-   python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\harvest.py" owner/repo --dest others
-
-   # (Or Claude Code: "$env:USERPROFILE\.claude\skills\loot\scripts\harvest.py" | Linux/macOS: "$HOME/.gemini/config/skills/loot/scripts/harvest.py" | Local: python skills/loot/scripts/harvest.py)
+   # (Or download full repository zip: python .../harvest.py owner/repo --dest others)
    ```
-2. Ensure `others/` is added to `.gitignore` so raw third-party code is never tracked.
+2. **Populate the Staging Queue (`others/` $\rightarrow$ `staging/`):**
+   Stage only the specific files identified for transfusion into `staging/` using the minitool:
+   ```powershell
+   python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\stage.py" add others/repo/path/to/file.py --repo owner/repo --license MIT
+   ```
+   Verify the queue with:
+   ```powershell
+   python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\stage.py" status
+   ```
 
 ---
 
-### Phase 3: Surgical Transfusion & Porting (Step-by-Step in Chat)
-Do not dump raw third-party code directly into `src/`. Execute clean transfusions with **Mandatory Provenance Tagging**:
+### Phase 3: Progressive Transfusion & Burn-Down (`staging/` $\rightarrow$ `src/`, `assets/`, `tests/`)
 
-1. **Curated Datasets / Knowledge Bases:**
-   - Move or adapt JSON/CSV/SQLite files from `others/<repo>/...` into `assets/` (or `data/`).
-   - For JSON/YAML files, include a top-level `"_provenance"` metadata block or comment noting origin and license.
-   - Write clean, typed loaders with error handling and validation.
-2. **Core Engines & Algorithms (The Clean Port):**
-   - Read the source file from `others/<repo>/...`. Inspect with `peek.py` if needed.
-   - Strip unwanted dependencies, proprietary bridges, and framework bloat.
-   - Refactor to match your project's clean architecture in `src/`, naming standards, Pydantic models, and logging.
-   - Add corresponding unit tests in `tests/`.
-3. **Mandatory In-Code Provenance Tagging (`[PIRATEGIT LOOT PROVENANCE]`):**
-   - **EVERY scavenged function, class, or module MUST include this docstring header:**
-     ```python
-     """
-     [PIRATEGIT LOOT PROVENANCE]
-     - Origin: https://github.com/<owner>/<repo> (path: <path/to/source/file>)
-     - Original License: <License Name> (e.g. GPL-3.0, MIT, Apache-2.0, None / All Rights Reserved)
-     - Usage Status: ⚠️ PoC / Prototipo Experimental
-     - Production Note: Si este proyecto pasa a producción comercial, revisar la licencia.
-                        (Permisiva = uso directo | Copyleft/Privativa = reescribir con Clean-Room).
-     """
-     ```
-   - Log the asset in `projects.md` with date, origin repository, original license, and modifications.
+Work through `staging/` file by file. This keeps context tokens minimal and ensures continuous visible progress:
+
+1. **Inspect & Adapt Staged File:**
+   - Read the single file from `staging/<repo>/...`.
+   - Adapt it cleanly into `src/` (or `assets/`), applying project naming standards, typing, and removing framework bloat.
+   - Write corresponding unit tests in `tests/`.
+2. **Burn-Down via Minitool (`complete`):**
+   Once the file is integrated and tested, execute `stage.py complete`:
+   ```powershell
+   python "$env:USERPROFILE\.gemini\config\skills\loot\scripts\stage.py" complete staging/repo/file.py --dest src/core/engine.py
+   ```
+   **The minitool automatically handles the mechanical plumbing:**
+   - Injects the `[PIRATEGIT LOOT PROVENANCE]` block into the destination file's docstring.
+   - Logs the entry in `projects.md`.
+   - Deletes `staging/repo/file.py` from the staging queue.
+3. **Repeat** until `stage.py status` reports that `staging/` is 100% empty.
 
 ---
 
@@ -125,18 +122,19 @@ Before declaring any `/loot` task complete, the agent **MUST** run the Quality T
 
 #### 1. The Devil's Advocate / Critic (`critic` subagent or adversarial review):
 Review the ported code in `src/` and `tests/` relentlessly looking for:
-- 🏷️ **100% Provenance Tag Coverage:** Did any scavenged function, class, or dataset miss its `[PIRATEGIT LOOT PROVENANCE]` tag? Every borrowed piece must be traceable.
-- 🧹 **Dead Code & Zombie Dependencies:** Are there unused imports, remnants of third-party helper utils, or hardcoded paths?
-- ⚡ **Architecture Drift:** Is all business code confined to `src/`? Are fixtures properly placed in `assets/` or `tests/`?
-- 🧪 **Test & Typing Coverage:** Are types complete (no `Any` escape hatches)? Are tests present in `tests/`?
+- 🏷️ **100% Provenance Tag Coverage:** Every function/class/schema must have its `[PIRATEGIT LOOT PROVENANCE]` docstring tag.
+- 🧹 **Dead Code & Zombie Dependencies:** Clean imports, no mock relics, no hardcoded paths.
+- ⚡ **Architecture Drift:** Business logic in `src/`, fixtures in `assets/`, tests in `tests/`.
+- 🧪 **Test Suite Verification:** Run all unit tests in `tests/` to confirm green execution.
+- 🗑️ **Queue Burn-Down Verification:** Confirm that `staging/` is completely burned down (empty).
 
 #### 2. The Judge Verdict (`judge` subagent or formal sign-off):
-The Judge evaluates the Critic's findings and generates the **Loot Provenance Inventory Table**:
+The Judge reviews the Critic's report and outputs the **Loot Provenance Inventory Table**:
 
 | Componente Portado | Archivo Destino | Repositorio Origen | Licencia Origen | Estado para Producción |
 |---|---|---|---|---|
 | `ejemplo_funcion()` | `src/core/engine.py` | `owner/repo1` | `GPL-3.0` | ⚠️ PoC Only (Reescribir Clean-Room antes de producción) |
 | `dataset_schema.json` | `assets/data.json` | `owner/repo2` | `MIT` | 🟢 Listo para producción comercial |
 
-- **Verdict:** `🟢 PROVENANCE AUDITED & READY FOR EXPERIMENTATION` (or `🟡 NEEDS REMEDIATION` if tags or tests are missing).
+- **Verdict:** `🟢 PROVENANCE AUDITED & READY FOR EXPERIMENTATION`
 - **Remediation:** If any function lacked provenance tags or failed tests, apply the fix immediately before closing the task.

@@ -134,15 +134,14 @@ If your project is empty or greenfield and one of the explored repositories alre
 ```
 
 ### How the Agent Executes `/loot`:
-1. **Architectural Alignment & Baseline Selection:** Evaluates your workspace, proposes standard `src/`, `tests/`, `assets/` layout (or baseline adoption), and maps code/data sources. Works for any candidate regardless of license for early-stage PoCs. Asks for confirmation before modifying files.
-2. **Harvest to `others/`:** Downloads candidate repositories or specific subdirectories into a local `others/<repo>` folder (kept in `.gitignore` so your repo stays lightweight).
-3. **Surgical Transfusion with In-Code Provenance Tagging:**
-   - Adapts datasets into `assets/` (or `data/`) with typed loaders and metadata.
-   - Refactors core engines into `src/`: cleans dependencies and adapts to your architecture and typing standards.
-   - **Mandatory In-Code Provenance Tagging:** Injects a standard `[PIRATEGIT LOOT PROVENANCE]` docstring block into every scavenged function/class, noting origin repository, original license, and a clear production warning (Permissive = ready; Copyleft/Proprietary = requires Clean-Room rewrite before shipping).
+1. **Architectural Alignment & Zero-Args Inference:** Automatically inherits top candidate repositories and identified loot from `/explore` (or interprets user-specified exclusions).
+2. **Harvest (`others/`) & Stage (`staging/`):** Downloads candidate repositories into quarantine (`others/`) and stages only the 3–8 specific files selected for integration into a temporary `staging/` work queue.
+3. **Progressive Burn-Down Transfusion (`staging/` $\rightarrow$ `src/`):**
+   - Transfuses one staged file at a time into `src/` or `assets/` with clean architecture and unit tests in `tests/`.
+   - The minitool (`stage.py complete`) automatically stamps the `[PIRATEGIT LOOT PROVENANCE]` block into the code, logs it in `projects.md`, and burns down (deletes) the file from `staging/`.
 4. **Mandatory Quality Tribunal:**
-   - 🕵️ **The Critic Subagent:** Audits ported code for 100% provenance tag coverage, dead code, zombie dependencies, and architecture cleanliness.
-   - ⚖️ **The Judge Subagent:** Reviews findings and outputs the **Loot Provenance Inventory Table** (Origin, License, Production Status) and delivers the sign-off verdict (`🟢 PROVENANCE AUDITED & READY FOR EXPERIMENTATION`).
+   - 🕵️ **The Critic Subagent:** Verifies that all unit tests pass, zero dead dependencies remain, and `staging/` is 100% burned down (empty).
+   - ⚖️ **The Judge Subagent:** Reviews findings and outputs the **Loot Provenance Inventory Table** (Origin, License, Production Status) and signs off (`🟢 PROVENANCE AUDITED & READY FOR EXPERIMENTATION`).
 
 ---
 

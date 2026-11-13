@@ -221,6 +221,8 @@ __marimo__/
 
 # PirateGit Quarantine & Caches
 others/
+staging/
+.staging/
 agy_github_scout_cache/
 .idea/
 .vscode/
