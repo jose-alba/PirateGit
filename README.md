@@ -27,6 +27,19 @@ PirateGit adds two high-leverage slash commands powered by specialized subagents
                to others/, transplants clean code into src/, assets/ & tests/, and runs Critic + Judge.
 ```
 
+### ⚡ Quick Install (100% Zero-Dependency Python Stdlib)
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/jose-alba/PirateGit/main/install.ps1 | iex
+```
+
+```bash
+# macOS & Linux (Bash)
+curl -fsSL https://raw.githubusercontent.com/jose-alba/PirateGit/main/install.sh | bash
+```
+*Installs into Google Antigravity (`~/.gemini`) and Claude Code (`~/.claude`) with zero external dependencies.*
+
 ---
 
 ## 📂 100% Self-Contained Skill Architecture
@@ -172,12 +185,12 @@ python skills/loot/scripts/harvest.py owner/repo --dest others --paths path/to/f
 
 ### Windows (PowerShell)
 ```powershell
-irm https://raw.githubusercontent.com/username/PirateGit/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/jose-alba/PirateGit/main/install.ps1 | iex
 ```
 
 ### macOS / Linux (Bash)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/username/PirateGit/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jose-alba/PirateGit/main/install.sh | bash
 ```
 
 ### Manual Installation (Drop into any project)

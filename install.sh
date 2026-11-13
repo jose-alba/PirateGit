@@ -15,7 +15,7 @@ if [ -n "$SCRIPT_DIR" ] && [ -d "$SCRIPT_DIR/skills/explore" ]; then
 else
     TEMP_DIR=$(mktemp -d)
     echo -e "\033[1;33m📥 Downloading latest PirateGit release from GitHub...\033[0m"
-    curl -fsSL "https://github.com/username/PirateGit/archive/refs/heads/main.tar.gz" | tar -xz -C "$TEMP_DIR"
+    curl -fsSL "https://github.com/jose-alba/PirateGit/archive/refs/heads/main.tar.gz" | tar -xz -C "$TEMP_DIR"
     SOURCE_ROOT="$TEMP_DIR/PirateGit-main/skills"
 fi
 
